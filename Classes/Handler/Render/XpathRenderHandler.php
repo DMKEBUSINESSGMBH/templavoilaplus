@@ -18,6 +18,7 @@ namespace Tvp\TemplaVoilaPlus\Handler\Render;
  */
 use Tvp\TemplaVoilaPlus\Domain\Model\Configuration\TemplateConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Core\Environment;
 
 class XpathRenderHandler implements RenderHandlerInterface
 {
@@ -149,10 +150,13 @@ class XpathRenderHandler implements RenderHandlerInterface
                 $processingNodes[$fieldName] = $result->item(0);
             } else {
                 /** @TODO Only in debug? Would be uncool to have such messages live */
-                if ($result === false) {
-                    var_dump('XPath: "' . $fieldMappingConfiguration['xpath'] . '" is invalid');
-                } else {
-                    var_dump('No result for XPath: "' . $fieldMappingConfiguration['xpath'] . '"');
+                $applicationContext = Environment::getContext();
+                if ($applicationContext->isDevelopment()) {
+                    if ($result === false) {
+                        var_dump('XPath: "' . $fieldMappingConfiguration['xpath'] . '" is invalid');
+                    } else {
+//                        var_dump('No result for XPath: "' . $fieldMappingConfiguration['xpath'] . '"');
+                    }
                 }
             }
         }
@@ -241,8 +245,10 @@ class XpathRenderHandler implements RenderHandlerInterface
             // Template mapping wrong?
             return;
         }
-
-        switch ($mappingConfiguration['valueType']) {
+        $valueType = (array_key_exists('valueType', $mappingConfiguration))
+            ? $mappingConfiguration['valueType']
+            : '';
+        switch ($valueType) {
             case 'html':
                 if ($processedValues[$fieldName]) {
                     $tmpDoc = new \DOMDocument();

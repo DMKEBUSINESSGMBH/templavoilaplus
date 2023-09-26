@@ -301,7 +301,7 @@ class FlexFormTools8 extends \TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTool
             // Fetch rootline until a valid pointer value is found
             $handledUids = [];
             while (!$pointerValue) {
-                $handledUids[$row['uid']] = 1;
+                if (!array_key_exists('doktype', $row)) $handledUids[$row['uid']] = 1;
                 $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($tableName);
                 $queryBuilder->getRestrictions()
                     ->removeAll()
