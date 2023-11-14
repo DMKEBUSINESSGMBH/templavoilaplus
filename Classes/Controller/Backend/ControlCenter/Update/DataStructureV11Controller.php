@@ -48,7 +48,7 @@ class DataStructureV11Controller extends AbstractUpdateController
         );
 
         $this->view->assignMultiple([
-            'countStatic' => $countStatic,
+            'countStatic' => 0,
             'count' => $count,
             'errors' => $this->errors,
         ]);
@@ -63,7 +63,10 @@ class DataStructureV11Controller extends AbstractUpdateController
         $changed = false;
         if (
             (string)($element['TCEforms']['config']['type']) === 'select'
-            && (string)($element['TCEforms']['config']['special']) === 'languages'
+            && (
+                ! array_key_exists('special', $element['TCEforms']['config'])
+                || (string)($element['TCEforms']['config']['special']) === 'languages'
+            )
         ) {
             $element['TCEforms']['config'] = [
                 'type' => 'language',
@@ -129,7 +132,10 @@ class DataStructureV11Controller extends AbstractUpdateController
         $changed = false;
         if (
             (string)($element['TCEforms']['config']['type']) === 'inline'
-            && (string)($element['TCEforms']['config']['appearance']['levelLinksPosition']) === 'none'
+            && (
+                ! array_key_exists('levelLinksPosition', $element['TCEforms']['config']['appearance'])
+                || (string)($element['TCEforms']['config']['appearance']['levelLinksPosition']) === 'none'
+            )
         ) {
             unset($element['TCEforms']['config']['appearance']['levelLinksPosition']);
             $element['TCEforms']['config']['appearance']['showAllLocalizationLink'] = false;
